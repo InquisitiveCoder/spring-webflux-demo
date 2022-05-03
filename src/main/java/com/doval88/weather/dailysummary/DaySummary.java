@@ -19,19 +19,19 @@ public record DaySummary(
         var periods = forecast.properties().periods();
         var day = periods.get(0);
 
+        var name = LocalDate.now().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
         if (day.name().equals("Tonight")) {
-            var name = LocalDate.now().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
             return new DaySummary(name, getCelsius(day).value(), day.shortForecast());
         }
 
         var night = periods.get(1);
         if (day.temperature() > night.temperature()) {
-            return new DaySummary(day.name(), getCelsius(day).value(), day.shortForecast());
+            return new DaySummary(name, getCelsius(day).value(), day.shortForecast());
         }
 
         // Use day.name() since night.name() will have a " Night" suffix.
         // Use night.shortForecast() since that's the forecast that corresponds to the temperature
-        return new DaySummary(day.name(), getCelsius(night).value(), night.shortForecast());
+        return new DaySummary(name, getCelsius(night).value(), night.shortForecast());
     }
 
     private static Celsius getCelsius(Period period) {
